@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,6 +22,15 @@ namespace JWTWebAPI.Controllers
         public AuthController(IConfiguration configuration)
         {
             this.configuration = configuration;
+        }
+
+        [HttpGet, Authorize] //Read JWt Authorization Claims of a User
+        [Route("api/Auth/GetRoles")]
+        public ActionResult<object> GetMe()
+        {
+            var username = User.FindFirstValue(ClaimTypes.Name);
+            var role=User.FindFirstValue(ClaimTypes.Role);
+            return Ok(new { username, role });
         }
 
         [HttpPost]
